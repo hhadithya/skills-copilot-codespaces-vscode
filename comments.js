@@ -1,12 +1,12 @@
 // create web server with express
-const express = require('express');
-const router = express.Router();
-const Comment = require('../models/Comment');
+import { Router } from 'express';
+const router = Router();
+import Comment, { find, findById, remove, updateOne } from '../models/Comment';
 
 // Get all comments
 router.get('/', async (req, res) => {
     try {
-        const comments = await Comment.find();
+        const comments = await find();
         res.json(comments);
     } catch (err) {
         res.json({ message: err });
@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
 // Get specific comment
 router.get('/:commentId', async (req, res) => {
     try {
-        const comment = await Comment.findById(req.params.commentId);
+        const comment = await findById(req.params.commentId);
         res.json(comment);
     } catch (err) {
         res.json({ message: err });
@@ -42,7 +42,7 @@ router.post('/', async (req, res) => {
 // Delete a comment
 router.delete('/:commentId', async (req, res) => {
     try {
-        const removedComment = await Comment.remove({ _id: req.params.commentId });
+        const removedComment = await remove({ _id: req.params.commentId });
         res.json(removedComment);
     } catch (err) {
         res.json({ message: err });
@@ -52,7 +52,7 @@ router.delete('/:commentId', async (req, res) => {
 // Update a comment
 router.patch('/:commentId', async (req, res) => {
     try {
-        const updatedComment = await Comment.updateOne(
+        const updatedComment = await updateOne(
             { _id: req.params.commentId },
             { $set: { name: req.body.name, text: req.body.text, date: req.body.date } }
         );
@@ -62,4 +62,4 @@ router.patch('/:commentId', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;
